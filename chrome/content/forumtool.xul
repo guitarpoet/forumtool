@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<overlay id="cookieSwapOverlay" 
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+   <script language="JavaScript" src="chrome://forumtool/content/lib/prototype_xul_1_6_0_2.js"></script>
+   <script language="JavaScript">
+      try{
+      	$(window).observe("load", function(){
+      		alert(1);
+      	});
+      }
+      catch(e){
+      	alert(e.message);
+      }
+   </script>
+   <statusbar id="status-bar" class="chromeclass-status">
+	  <statusbarpanel id="forumtool-panel" 
+		 tooltip="forumtool-tooltip"
+		 context="forumtool-statusbar-menu">
+		 <hbox>
+			 <image src="chrome://forumtool/content/small_icon.png" />
+			 <label id="forumtool-statusbar-label" value="Accounts" />
+		 </hbox>
+	 </statusbarpanel>
+   </statusbar>
+
+ <popupset id="mainPopupSet">
+	 <popup id="forumtool-statusbar-menu">
+       <menuseparator id="forumtool-account-list-separator" />
+       <menuitem label="Hello" oncommand="alert('Hello')" />
+	 </popup>
+	 <tooltip id="forumtool-tooltip" insertafter="backMenu">
+		 <vbox flex="1">
+			 <label value="Forum Tool"/>
+		 </vbox>
+	 </tooltip>
+ </popupset>
+</overlay>
