@@ -4,22 +4,22 @@
      xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 
   <Description about="urn:mozilla:install-manifest">
-    <em:id>cookieSwap@cookieSwap.mozdev.org</em:id>
+    <em:id>forumtool@gopha.com.cn</em:id>
     <em:version>1.0</em:version>
     <em:type>2</em:type>
-   
+
     <em:targetApplication>
       <Description>
-        <em:id>{CDC6EEE3-7AC7-4BC6-915D-65ACE28421C1}</em:id>
+        <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
         <em:minVersion>1.5</em:minVersion>
-        <em:maxVersion>3.0.0.*</em:maxVersion>
+        <em:maxVersion>3.0.*</em:maxVersion>
       </Description>
     </em:targetApplication>
    
-    <em:name>CookieSwap</em:name>
-    <em:description>Tool to save and swap out a collection of cookies on the fly</em:description>
-    <em:creator>Jack(guitarpoet@gmail.com)</em:creator>
-    <em:homepageURL>http://www.google.com</em:homepageURL>
-    <em:iconURL>chrome://cookieswap/skin/CookieSwap.png</em:iconURL>
+    <em:name>Forum Tool</em:name>
+    <em:description>A tool for manage all your forum accounts.</em:description>
+    <em:creator>Jack&lt;guitarpoet@gmail.com&gt;</em:creator>
+    <em:homepageURL>http://www.gopha.com.cn</em:homepageURL>
+    <em:iconURL>chrome://forumtool/content/icon.png</em:iconURL>
   </Description>      
 </RDF>
