@@ -68,7 +68,7 @@
 		 context="forumtool-statusbar-menu">
 		 <hbox>
 			 <image src="chrome://forumtool/content/small_icon.png" />
-			 <label id="forumtool-statusbar-label" value="Accounts" />
+			 <label id="forumtool-statusbar-label" value="&forumtool_statusbar_label;" />
 		 </hbox>
 	 </statusbarpanel>
    </statusbar>
@@ -76,11 +76,11 @@
  	<popupset id="mainPopupSet">
 		<popup id="forumtool-statusbar-menu">
        		<menuseparator id="forumtool-account-list-separator" />
-			<menuitem label="&forumtool.save.label" oncommand="forumtool.saveProfile();" />
+			<menuitem label="&formtool_save_label;" oncommand="forumtool.saveProfile();" />
 	 	</popup>
 	 	<tooltip id="forumtool-tooltip" insertafter="backMenu">
 			<vbox flex="1">
-				<label value="&forumtool.tooltip"/>
+				<label value="&formtool_tooltip;"/>
 		 	</vbox>
 	 	</tooltip>
  	</popupset>

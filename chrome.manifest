@@ -1,6 +1,8 @@
 content forumtool chrome/content/
+
+locale forumtool en-US chrome/locale/en-US/
+locale forumtool zh-CN chrome/locale/zh-CN/
+
 overlay chrome://browser/content/browser.xul chrome://forumtool/content/forumtool.xul
 
-locale forumtool en-US chrome://forumtool/locale/en-US
-locale forumtool zh-CN chrome://forumtool/locale/zh-CN
 
