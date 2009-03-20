@@ -1,4 +1,6 @@
 <?xml version="1.0"?>
+<!DOCTYPE overlay SYSTEM "chrome://forumtool/locale/main.dtd">
+
 <overlay id="cookieSwapOverlay" 
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
    <script language="JavaScript" src="chrome://forumtool/content/lib/prototype_xul_1_6_0_2.js"></script>
@@ -9,28 +11,8 @@
 	
 	var profs = $A([]);
 	
-	function getProfilesDir() {
-		var dir = ServiceLocator.getProfDir();
-		dir.append('cookieProfiles');
-		forumtool.checkDir(dir);
-		dir.append(getDomain());
-		forumtool.checkDir(dir);
-		return dir;
-	}
-	
-	function getProfiles() {
-		var ret = $A([]);
-		var files = getProfilesDir().directoryEntries;
-		while (files.hasMoreElements()){
-			var e = files.getNext();
-			e.QueryInterface(Components.interfaces.nsIFile);
-			ret.push(e);
-	    }
-		return ret;
-	}
-	
 	function getCookieString(prof){
-		var f = FileIO.open(getProfilesDir().path + "/" + prof);
+		var f = FileIO.open(forumtool.getProfilesDir().path + "/" + prof);
 		return FileIO.read(f);
 	}
 	
@@ -47,7 +29,7 @@
 			profs = $A([]);
 			
 			// Then add them.
-			getProfiles().each(function(profile){
+			forumtool.getProfiles().each(function(profile){
 	    		var item = document.createElement("menuitem");
 	    		item.setAttribute("label", profile.leafName);
 				item.setAttribute('oncommand', "itemClick(this)", false);
@@ -58,17 +40,10 @@
     });
 
 	function cleanCookies(){
-		Components.classes["@mozilla.org/cookiemanager;1"]
-			.getService()
-			.QueryInterface(Components.interfaces.nsICookieManager).removeAll();
-		/*
 		forumtool.findCookies(getDomain()).each(function(cookie){
-			Components.classes["@mozilla.org/cookiemanager;1"]
-				.getService()
-				.QueryInterface(Components.interfaces.nsICookieManager)
+			ServiceLocator.cookieManager
 				.remove(cookie.domain, cookie.name, cookie.path, false);
 		});
-		*/
 	}
 	
 	function getDomain(){
@@ -79,60 +54,12 @@
 		var cookies = getProfileCookies(prof);
 		cleanCookies();
 		cookies.each(function(c){
-			setCookie(c);
+			forumtool.setCookie(c);
 		})
 	}
 
 	function itemClick(item) {
 		swapCookies(item.label);
-	}
-	
-	function setCookie(newCookie){
-		var uri = Components.classes["@mozilla.org/network/standard-url;1"].createInstance(Components.interfaces.nsIURI);
-		var cservice = Components.classes["@mozilla.org/cookieService;1"].getService().QueryInterface(Components.interfaces.nsICookieService);
-
-		// cookiemanager.remove( curCookie.host, curCookie.name, curCookie.path, false );
-
-	   	//lets specify the uri.spec https if such just in case
-	   	var HttpProtocol = newCookie.isSecure ? "https://" : "http://"
-	   	uri.spec = HttpProtocol + newCookie.host + newCookie.path;
-
-		var cookieString = '';
-		cookieString = cookieString + newCookie.name + "=" + newCookie.value + ";"; 
-
-
-		if (newCookie.isDomain)
-			cookieString = cookieString + "domain=" + newCookie.host +";"
-
-		if (newCookie.expires)
-			cookieString = cookieString + "expires=" + (new Date(newCookie.expires)) + ";"
-
-		cookieString = cookieString + "path=" + newCookie.path + ";"
-
-		if (HttpProtocol == "https://")
-			cookieString = cookieString + "secure"
-
-		//get the old value
-		var gOldCookieString = cservice.getCookieString(uri, null);
-		dump("Setting cookie -> " + uri.spec + " : " + cookieString + " : " + newCookie.expires + " : " + new Date(newCookie.expires) + "\n");
-		cservice.setCookieString(uri, null, cookieString, null );
-	}
-	
-	function saveProfile(){
-		 var params = {
-			inn : null, 
-			out : null
-		 };       
-		 window.openDialog("chrome://forumtool/content/getProfileNameDialog.xul", "",
-		   "chrome, dialog, modal, resizable=yes", params).focus();
-		 if (params.out) {
-			var dir = getProfilesDir();
-			dir.append(params.out);
-			FileIO.write(dir, Object.toJSON(forumtool.findCookies(getDomain())));
-		 }
-		 else {
-		   // User clicked cancel. Typically, nothing is done here.
-		 }
 	}
    </script>
    <statusbar id="status-bar" class="chromeclass-status">
@@ -149,11 +76,11 @@
  	<popupset id="mainPopupSet">
 		<popup id="forumtool-statusbar-menu">
        		<menuseparator id="forumtool-account-list-separator" />
-			<menuitem label="Save" oncommand="saveProfile();" />
+			<menuitem label="&forumtool.save.label" oncommand="forumtool.saveProfile();" />
 	 	</popup>
 	 	<tooltip id="forumtool-tooltip" insertafter="backMenu">
 			<vbox flex="1">
-				<label value="Forum Tool"/>
+				<label value="&forumtool.tooltip"/>
 		 	</vbox>
 	 	</tooltip>
  	</popupset>

@@ -5,7 +5,7 @@
 
   <Description about="urn:mozilla:install-manifest">
     <em:id>forumtool@gopha.com.cn</em:id>
-    <em:version>1.0</em:version>
+    <em:version>0.2</em:version>
     <em:type>2</em:type>
 
     <em:targetApplication>
@@ -15,7 +15,13 @@
         <em:maxVersion>3.0.*</em:maxVersion>
       </Description>
     </em:targetApplication>
-   
+    <em:localized>
+      <Description>
+        <em:locale>zh-CN</em:locale>
+        <em:name>论坛工具</em:name>
+        <em:description>帮助你处理论坛的基础工具。</em:description>
+      </Description>
+    </em:localized>
     <em:name>Forum Tool</em:name>
     <em:description>A tool for manage all your forum accounts.</em:description>
     <em:creator>Jack&lt;guitarpoet@gmail.com&gt;</em:creator>

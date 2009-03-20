@@ -1,1 +1,15 @@
-Based on CookieSwap 0.5
+== Over view ==
+Forum tool aims to solve all the needs you want to use in a forum. It use firefox as a platform.
+
+It will provide the service as list bellow.
+ * Change login on the fly.
+ * Track the post you want.
+ * Single place to post multiple posts.
+ * Manage all your posts in multiple site in one place.
+
+Now the version of forum tool is 0.1, it only supports change login on the fly.
+
+
+== Developer ==
+
+Jack <guitarpoet@gmail.com>

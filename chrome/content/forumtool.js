@@ -1,48 +1,37 @@
-forumtool.Profile = Class.create({
-	//	summary:
-	//		The profile object for user switch profile.
-	initialize : function(file){
-		//	summary:
-		//		Initiaze the object with the profile file. It will use 
-		//		the name to fetch the profile
-		forumtool.debug("Initializing profile.");
-		this.cookies = FileIO.read(file).split("\n");
-		this.file = file;
-	},
-	
-	save : function(){
-		//	summary:
-		//		Save the change to the profile file.
-		FileIO.write(this.file, this.cookies.join("\n"));
-	},
-	
-	remove : function(){
-		FileIO.unlink(this.file);
-	}
-});
+forumtool.getProfilesDir = function() {
+	var dir = ServiceLocator.getProfDir();
+	dir.append('cookieProfiles');
+	forumtool.checkDir(dir);
+	dir.append(getDomain());
+	forumtool.checkDir(dir);
+	return dir;
+}
 
-forumtool.getProfiles = function(){
+forumtool.getProfiles = function() {
 	var ret = $A([]);
-	forumtool.debug("Getting dir.");
-	// get profile directory
-	var profileDir = ServiceLocator.profDir;
-    profileDir.append("forumtool");
-    forumtool.checkDir(profileDir);
-    profileDir.append("profiles");
-    forumtool.checkDir(profileDir);
-    var files = this.profileDir.directoryEntries;
-    while (files.hasMoreElements()){
-		ret.push(new forumtool.Profile(files.next()));
+	var files = forumtool.getProfilesDir().directoryEntries;
+	while (files.hasMoreElements()){
+		var e = files.getNext();
+		e.QueryInterface(Components.interfaces.nsIFile);
+		ret.push(e);
     }
 	return ret;
 }
 
-forumtool.saveProfiles = function(profiles){
-	$A(profiles).each(function(profile){
-		profile.save();
-	});
-}
 
-function saveProfile () {
-	
+forumtool.saveProfile = function(){
+	 var params = {
+		inn : null, 
+		out : null
+	 };       
+	 window.openDialog("chrome://forumtool/content/getProfileNameDialog.xul", "",
+	   "chrome, dialog, modal, resizable=yes", params).focus();
+	 if (params.out) {
+		var dir = getProfilesDir();
+		dir.append(params.out);
+		FileIO.write(dir, Object.toJSON(forumtool.findCookies(getDomain())));
+	 }
+	 else {
+	   // User clicked cancel. Typically, nothing is done here.
+	 }
 }

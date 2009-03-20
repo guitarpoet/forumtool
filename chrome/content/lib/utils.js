@@ -120,3 +120,27 @@ forumtool.getCookieString = function(url) {
 forumtool.setCookieString = function (uri, cookie) {
 	ServiceLocator.cookie.setCookieString(uri, null, cookie, null);
 }
+
+forumtool.setCookie = function(newCookie){
+	var uri = Components.classes["@mozilla.org/network/standard-url;1"].createInstance(Components.interfaces.nsIURI);
+
+   	//lets specify the uri.spec https if such just in case
+   	var HttpProtocol = newCookie.isSecure ? "https://" : "http://"
+   	uri.spec = HttpProtocol + newCookie.host + newCookie.path;
+
+	var cookieString = '';
+	cookieString = cookieString + newCookie.name + "=" + newCookie.value + ";"; 
+
+	if (newCookie.isDomain)
+		cookieString = cookieString + "domain=" + newCookie.host +";"
+
+	if (newCookie.expires)
+		cookieString = cookieString + "expires=" + (new Date(newCookie.expires)) + ";"
+
+	cookieString = cookieString + "path=" + newCookie.path + ";"
+
+	if (HttpProtocol == "https://")
+		cookieString = cookieString + "secure"
+
+	forumtool.setCookieString(uri, cookieString);
+}
