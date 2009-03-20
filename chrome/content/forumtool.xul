@@ -4,15 +4,136 @@
    <script language="JavaScript" src="chrome://forumtool/content/lib/prototype_xul_1_6_0_2.js"></script>
    <script language="JavaScript" src="chrome://forumtool/content/lib/io.js"></script>
    <script language="JavaScript" src="chrome://forumtool/content/lib/utils.js"></script>
-   <script language="JavaScript" src="chrome://forumtool/content/CookieSwitcher.js"></script>
+   <script language="JavaScript" src="chrome://forumtool/content/forumtool.js"></script>
    <script language="JavaScript">
-      Event.observe(window, "load", function(){
-      	$A(forumtool.getProfiles()).each(function(profile){
-      		var item = document.createElement("menuitem");
-      		item.setAttribute("label", profile.file.path);
-      		$("forumtool-statusbar-menu").insertBefore(iterm, $("forumtool-account-list-separator"));
-      	});
-      });
+	
+	var profs = $A([]);
+	
+	function getProfilesDir() {
+		var dir = ServiceLocator.getProfDir();
+		dir.append('cookieProfiles');
+		forumtool.checkDir(dir);
+		dir.append(getDomain());
+		forumtool.checkDir(dir);
+		return dir;
+	}
+	
+	function getProfiles() {
+		var ret = $A([]);
+		var files = getProfilesDir().directoryEntries;
+		while (files.hasMoreElements()){
+			var e = files.getNext();
+			e.QueryInterface(Components.interfaces.nsIFile);
+			ret.push(e);
+	    }
+		return ret;
+	}
+	
+	function getCookieString(prof){
+		var f = FileIO.open(getProfilesDir().path + "/" + prof);
+		return FileIO.read(f);
+	}
+	
+	function getProfileCookies(prof){
+		return $A(eval(getCookieString(prof)));
+	}
+	
+    Event.observe(window, "load", function(){
+ 		Event.observe($('forumtool-panel'), "contextmenu", function(){
+			// Clear items first.
+			profs.each(function(item){
+				$("forumtool-statusbar-menu").removeChild(item);
+			})
+			profs = $A([]);
+			
+			// Then add them.
+			getProfiles().each(function(profile){
+	    		var item = document.createElement("menuitem");
+	    		item.setAttribute("label", profile.leafName);
+				item.setAttribute('oncommand', "itemClick(this)", false);
+				profs.push(item);
+	    		$("forumtool-statusbar-menu").insertBefore(item, $("forumtool-account-list-separator"));
+	    	});
+		});
+    });
+
+	function cleanCookies(){
+		Components.classes["@mozilla.org/cookiemanager;1"]
+			.getService()
+			.QueryInterface(Components.interfaces.nsICookieManager).removeAll();
+		/*
+		forumtool.findCookies(getDomain()).each(function(cookie){
+			Components.classes["@mozilla.org/cookiemanager;1"]
+				.getService()
+				.QueryInterface(Components.interfaces.nsICookieManager)
+				.remove(cookie.domain, cookie.name, cookie.path, false);
+		});
+		*/
+	}
+	
+	function getDomain(){
+		return forumtool.getDomain(content.document.baseURI);
+	}
+
+	function swapCookies(prof) {
+		var cookies = getProfileCookies(prof);
+		cleanCookies();
+		cookies.each(function(c){
+			setCookie(c);
+		})
+	}
+
+	function itemClick(item) {
+		swapCookies(item.label);
+	}
+	
+	function setCookie(newCookie){
+		var uri = Components.classes["@mozilla.org/network/standard-url;1"].createInstance(Components.interfaces.nsIURI);
+		var cservice = Components.classes["@mozilla.org/cookieService;1"].getService().QueryInterface(Components.interfaces.nsICookieService);
+
+		// cookiemanager.remove( curCookie.host, curCookie.name, curCookie.path, false );
+
+	   	//lets specify the uri.spec https if such just in case
+	   	var HttpProtocol = newCookie.isSecure ? "https://" : "http://"
+	   	uri.spec = HttpProtocol + newCookie.host + newCookie.path;
+
+		var cookieString = '';
+		cookieString = cookieString + newCookie.name + "=" + newCookie.value + ";"; 
+
+
+		if (newCookie.isDomain)
+			cookieString = cookieString + "domain=" + newCookie.host +";"
+
+		if (newCookie.expires)
+			cookieString = cookieString + "expires=" + (new Date(newCookie.expires)) + ";"
+
+		cookieString = cookieString + "path=" + newCookie.path + ";"
+
+		if (HttpProtocol == "https://")
+			cookieString = cookieString + "secure"
+
+		//get the old value
+		var gOldCookieString = cservice.getCookieString(uri, null);
+		dump("Setting cookie -> " + uri.spec + " : " + cookieString + " : " + newCookie.expires + " : " + new Date(newCookie.expires) + "\n");
+		cservice.setCookieString(uri, null, cookieString, null );
+	}
+	
+	function saveProfile(){
+		 var params = {
+			inn : null, 
+			out : null
+		 };       
+		 window.openDialog("chrome://forumtool/content/getProfileNameDialog.xul", "",
+		   "chrome, dialog, modal, resizable=yes", params).focus();
+		 if (params.out) {
+			var dir = getProfilesDir();
+			dir.append(params.out);
+			FileIO.write(dir, Object.toJSON(forumtool.findCookies(getDomain())));
+		 }
+		 else {
+		   // User clicked cancel. Typically, nothing is done here.
+		 }
+	}
    </script>
    <statusbar id="status-bar" class="chromeclass-status">
 	  <statusbarpanel id="forumtool-panel" 
@@ -28,7 +149,7 @@
  	<popupset id="mainPopupSet">
 		<popup id="forumtool-statusbar-menu">
        		<menuseparator id="forumtool-account-list-separator" />
-       		<menuitem label="Hello" oncommand="alert('Hello')" />
+			<menuitem label="Save" oncommand="saveProfile();" />
 	 	</popup>
 	 	<tooltip id="forumtool-tooltip" insertafter="backMenu">
 			<vbox flex="1">
