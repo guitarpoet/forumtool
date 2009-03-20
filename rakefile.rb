@@ -8,7 +8,7 @@ include Rake
 ex_path = "/Users/jack/Library/Application Support/Firefox/Profiles/dq92c6iy.development/extensions"
 
 Name = "forumtool"
-Version = "1.0"
+Version = "0.2"
 ID = "forumtool@gopha.com.cn"
 Path = "#{ex_path}/#{ID}"
 
@@ -29,4 +29,14 @@ task :firefox => :install do
 end
 
 task :default => :install do
+end
+
+Rake::PackageTask.new(Name, Version) do |p|
+  p.need_zip = true
+  p.package_files.include("**/*")
+end
+
+desc "Release task"
+task :release => [:clobber, :package] do
+  FileUtils.cp "pkg/#{Name}-#{Version}.zip", "pkg/#{Name}-#{Version}.xpi"
 end
