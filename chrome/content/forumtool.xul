@@ -12,8 +12,12 @@
 	var profs = $A([]);
 	
 	function getCookieString(prof){
-		var f = FileIO.open(forumtool.getProfilesDir().path + "/" + prof);
-		return FileIO.read(f);
+		var profDir = forumtool.getProfilesDir().path;
+		// Fix the bug, in windows can't read the file.
+		var isWindows = profDir.search(/\\/) != -1;
+		var f = FileIO.open(profDir + (isWindows? "\\" : "/") + prof);
+		var s = FileIO.read(f);
+		return s;
 	}
 	
 	function getProfileCookies(prof){
@@ -56,6 +60,7 @@
 		cookies.each(function(c){
 			forumtool.setCookie(c);
 		})
+		content.document.location = content.document.location;
 	}
 
 	function itemClick(item) {

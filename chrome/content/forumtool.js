@@ -27,7 +27,7 @@ forumtool.saveProfile = function(){
 	 window.openDialog("chrome://forumtool/content/getProfileNameDialog.xul", "",
 	   "chrome, dialog, modal, resizable=yes", params).focus();
 	 if (params.out) {
-		var dir = getProfilesDir();
+		var dir = forumtool.getProfilesDir();
 		dir.append(params.out);
 		FileIO.write(dir, Object.toJSON(forumtool.findCookies(getDomain())));
 	 }
