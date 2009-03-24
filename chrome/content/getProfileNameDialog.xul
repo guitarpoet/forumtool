@@ -1,9 +1,11 @@
 <?xml version="1.0"?>
+<!DOCTYPE overlay SYSTEM "chrome://forumtool/locale/main.dtd">
+
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
         ondialogaccept="window.arguments[0].out = $('profileName').value; return true;">
     <script language="JavaScript" src="chrome://forumtool/content/lib/prototype_xul_1_6_0_2.js"></script>
 	<vbox>
-	  <label value="Input the profile name."/>
+	  <label value="&forumtool_get_profile_prompt;"/>
 	  <textbox id="profileName"/>
 	  <spacer flex="1"/>
 	  <hbox>

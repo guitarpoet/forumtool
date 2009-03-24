@@ -2,3 +2,4 @@
 <!ENTITY	formtool_tooltip	"论坛工具 0.2">
 <!ENTITY	formtool_save_label	"保存">
 <!ENTITY	forumtool_statusbar_label	"帐号">
+<!ENTITY	forumtool_get_profile_prompt	"请输入帐号的名称">

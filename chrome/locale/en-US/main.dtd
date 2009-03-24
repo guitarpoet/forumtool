@@ -1,3 +1,4 @@
 <!ENTITY	formtool_tooltip	"Forum Tool 0.2">
 <!ENTITY	formtool_save_label	"Save">
 <!ENTITY	forumtool_statusbar_label	"Accounts">
+<!ENTITY	forumtool_get_profile_prompt	"Please input the profile name">
